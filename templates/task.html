@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title> Visualization Project 2 </title>
+
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav nav-fill w-100">
+                <li class="nav-item">
+                    <a class="nav-link" href="/task1a" id="task1a">Task 1(A)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/task1b" id="task1b">Task 1(B)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task2a">Task 2(A)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task2b">Task 2(B)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task2c">Task 2(C)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task2d">Task 2(D)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task3a">Task 3(A)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task3b">Task 3(B)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="task3c">Task 3(C)</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+<!-- <center>In Task {{taskJS}}</center> -->
+<div id="Attribute">
+    <span id="variable"></span>
+</div>
+<div id="svgElement">
+
+</div>
+<script>
+var data = {{data | safe}};
+{{taskJS}}(data);
+</script>
+
+
+{% endblock %}
