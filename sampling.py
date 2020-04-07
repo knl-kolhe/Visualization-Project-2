@@ -20,7 +20,7 @@ def stratifiedSampling():
 
     data=pd.DataFrame(data,columns=['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14','A15'])
     sampledData=data.groupby('A15', group_keys=False).apply(lambda x: x.sample(int(np.rint(0.25*len(x))))).sample(frac=1).reset_index(drop=True)
-    sampledData=sampledData.to_json()
+    #sampledData=sampledData.to_json()
 #    sampledData=sample(data,len(data)*0.25)
 #    for i in range(len(data)):
 #        if data[i,-1]==0 and np.random.uniform()<0.25:
@@ -47,7 +47,7 @@ def randomSampling():
           data.append( newLine )
 
     data=pd.DataFrame(data,columns=['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14','A15'])
-    sampledData=data.sample(frac=0.25).to_json()
+    sampledData=data.sample(frac=0.25)
 #    data=np.array(data,dtype=np.float32)
 #
 #    sampledData=[]
@@ -73,4 +73,4 @@ def originalData():
           newLine = line.strip().split()
           data.append( newLine )
     data=pd.DataFrame(data,columns=['A1','A2','A3','A4','A5','A6','A7','A8','A9','A10','A11','A12','A13','A14','A15'])
-    return data.to_json()
+    return data

@@ -5,10 +5,13 @@ Created on Mon Apr  6 01:25:01 2020
 @author: Kunal
 """
 
-import stratified_sampling
+import sampling
 from sklearn.cluster import KMeans
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 dataStrat=stratified_sampling.stratifiedSampling()
 dataRandom=stratified_sampling.randomSampling()
@@ -27,3 +30,24 @@ for i in range(1,10):
 
 kmeansData=pd.DataFrame({"clusters":[clusters],"avgDistance":[avgDistance]})
 data=kmeansData.to_json()
+
+
+dataOriginal=pd.io.json.read_json(sampling.originalData())
+dataOriginalY=dataOriginal['A15']
+del dataOriginal['A15']
+dataOriginal = StandardScaler().fit_transform(dataOriginal)
+pca = PCA(n_components = 2)
+
+originalPCA = pca.fit_transform(dataOriginal)
+red=[]
+blue=[]
+for i in range(len(originalPCA)):
+    if dataOriginalY[i]==0:
+        red.append(originalPCA[i,:])
+    else:
+        blue.append(originalPCA[i,:])
+red=np.array(red)
+blue=np.array(blue)
+plt.scatter(red[:,0],red[:,1],c='r')
+plt.scatter(blue[:,0],blue[:,1],c='b')
+plt.show()

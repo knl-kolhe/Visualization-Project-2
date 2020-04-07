@@ -5,6 +5,7 @@ import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -19,21 +20,21 @@ def about():
 
 @app.route('/task1a',methods=['GET'])
 def task1A():
-    dataStrat=sampling.stratifiedSampling()
-    dataRandom=sampling.randomSampling()
+    dataStrat=sampling.stratifiedSampling().to_json()
+    dataRandom=sampling.randomSampling().to_json()
     data={"stratifiedSampling":dataStrat,"randomSampling":dataRandom}
     return render_template('task.html',taskJS="task1a",data=data)
 
 @app.route('/task1b',methods=['GET','POST'])
 def task1B():
-    dataOriginal=pd.io.json.read_json(sampling.originalData())
+    dataOriginal=sampling.originalData()
     #dataOriginal.drop(['A15'], axis=1)
     del dataOriginal['A15']
 
-    dataRandom=pd.io.json.read_json(sampling.randomSampling())
+    dataRandom=sampling.randomSampling()
     del dataRandom['A15']
 
-    dataStrat=pd.io.json.read_json(sampling.stratifiedSampling())
+    dataStrat=sampling.stratifiedSampling()
     del dataStrat['A15']
 
     def kmeansElbow(data):
@@ -61,14 +62,14 @@ def task1B():
 
 @app.route('/task2a',methods=['GET'])
 def task2A():
-    dataOriginal=pd.io.json.read_json(sampling.originalData())
+    dataOriginal=sampling.originalData()
     #dataOriginal.drop(['A15'], axis=1)
     del dataOriginal['A15']
 
-    dataRandom=pd.io.json.read_json(sampling.randomSampling())
+    dataRandom=sampling.randomSampling()
     del dataRandom['A15']
 
-    dataStrat=pd.io.json.read_json(sampling.stratifiedSampling())
+    dataStrat=sampling.stratifiedSampling()
     del dataStrat['A15']
 
 
@@ -97,17 +98,17 @@ def task2A():
 @app.route('/task3a',methods=['GET'])
 def task3A():
 
-    dataOriginal=pd.io.json.read_json(sampling.originalData())
+    dataOriginal=sampling.originalData()
     dataOriginalY=dataOriginal['A15']
     del dataOriginal['A15']
     dataOriginal = StandardScaler().fit_transform(dataOriginal)
 
-    dataRandom=pd.io.json.read_json(sampling.randomSampling())
+    dataRandom=sampling.randomSampling()
     dataRandomY=dataRandom['A15']
     del dataRandom['A15']
     dataRandom = StandardScaler().fit_transform(dataRandom)
 
-    dataStrat=pd.io.json.read_json(sampling.stratifiedSampling())
+    dataStrat=sampling.stratifiedSampling()
     dataStratY=dataStrat['A15']
     del dataStrat['A15']
     dataStrat = StandardScaler().fit_transform(dataStrat)
@@ -115,11 +116,25 @@ def task3A():
     pca = PCA(n_components = 2)
 
     originalPCA = pca.fit_transform(dataOriginal)
+    # red=[]
+    # blue=[]
+    # for i in range(len(originalPCA)):
+    #     if dataOriginalY[i]==0:
+    #         red.append(originalPCA[i,:])
+    #     else:
+    #         blue.append(originalPCA[i,:])
+    # red=np.array(red)
+    # blue=np.array(blue)
+    # plt.scatter(red[:,0],red[:,1],c='r')
+    # plt.scatter(blue[:,0],blue[:,1],c='b')
+    # plt.show()
+
 
     randomPCA = pca.fit_transform(dataRandom)
 
     stratPCA = pca.fit_transform(dataStrat)
 
+    print(originalPCA[:,:2])
 
     data=[originalPCA,dataOriginalY,randomPCA,dataRandomY,stratPCA,dataStratY]
     data=pd.DataFrame(data)
