@@ -4,6 +4,7 @@ from sklearn.cluster import KMeans
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 app = Flask(__name__)
 
@@ -92,6 +93,38 @@ def task2A():
     data=pd.DataFrame(data)
     data=data.to_json()
     return render_template('task.html',taskJS="task2a",data=data)
+
+@app.route('/task3a',methods=['GET'])
+def task3A():
+
+    dataOriginal=pd.io.json.read_json(sampling.originalData())
+    dataOriginalY=dataOriginal['A15']
+    del dataOriginal['A15']
+    dataOriginal = StandardScaler().fit_transform(dataOriginal)
+
+    dataRandom=pd.io.json.read_json(sampling.randomSampling())
+    dataRandomY=dataRandom['A15']
+    del dataRandom['A15']
+    dataRandom = StandardScaler().fit_transform(dataRandom)
+
+    dataStrat=pd.io.json.read_json(sampling.stratifiedSampling())
+    dataStratY=dataStrat['A15']
+    del dataStrat['A15']
+    dataStrat = StandardScaler().fit_transform(dataStrat)
+
+    pca = PCA(n_components = 2)
+
+    originalPCA = pca.fit_transform(dataOriginal)
+
+    randomPCA = pca.fit_transform(dataRandom)
+
+    stratPCA = pca.fit_transform(dataStrat)
+
+
+    data=[originalPCA,dataOriginalY,randomPCA,dataRandomY,stratPCA,dataStratY]
+    data=pd.DataFrame(data)
+    data=data.to_json()
+    return render_template('task.html',taskJS="task3a",data=data)
 
 if __name__== "__main__":
     app.run(debug=True)

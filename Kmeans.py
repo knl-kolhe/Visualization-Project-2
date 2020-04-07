@@ -38,7 +38,7 @@ clusters=[]
 avgDistance=[]
 for i in range(1,10):    
     km = KMeans(n_clusters=i)
-    alldistances = km.fit_transform(x)
+    alldistances = km.fit_transform(sampledData)
     totalDistance = np.min(alldistances, axis=1).sum()
     clusters.append(i)
     avgDistance.append(totalDistance/i)
@@ -56,6 +56,10 @@ U, S, V = np.linalg.svd(A)
 eigVals = S**2 / np.sum(S**2)
 
 cumulative=[sum(eigVals[:i]) for i in range(1,15)]
+#for x in range(len(cumulative)):
+#    if cumulative[x]>0.75:
+#        print(x)
+#        break;
 
 intrinsicDim=pd.DataFrame({"dimension":[np.arange(1,15)],"eigenValues":[eigVals],"cumulativeEigVals":[cumulative]})
 intrinsicDim.to_csv("data/intrinsicDim.csv")
@@ -72,9 +76,6 @@ pca = PCA(.75)
 principalComponents = pca.fit_transform(x)
 print(f"75% of the variance is captures by {pca.n_components_} components")
 #pca.explained_variance_ratio_
-
-
-
 
 pca = PCA(n_components=2)
 principalComponents = pca.fit_transform(x)
