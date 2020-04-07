@@ -6,12 +6,13 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+import json
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('task.html')
+    return render_template('index.html')
 
 @app.route('/about')
 def about():
@@ -116,19 +117,6 @@ def task3A():
     pca = PCA(n_components = 2)
 
     originalPCA = pca.fit_transform(dataOriginal)
-    # red=[]
-    # blue=[]
-    # for i in range(len(originalPCA)):
-    #     if dataOriginalY[i]==0:
-    #         red.append(originalPCA[i,:])
-    #     else:
-    #         blue.append(originalPCA[i,:])
-    # red=np.array(red)
-    # blue=np.array(blue)
-    # plt.scatter(red[:,0],red[:,1],c='r')
-    # plt.scatter(blue[:,0],blue[:,1],c='b')
-    # plt.show()
-
 
     randomPCA = pca.fit_transform(dataRandom)
 
@@ -140,6 +128,83 @@ def task3A():
     data=pd.DataFrame(data)
     data=data.to_json()
     return render_template('task.html',taskJS="task3a",data=data)
+
+@app.route('/task3b',methods=['GET'])
+def task3B():
+
+    dataOriginal=sampling.originalData()
+    dataOriginalY=dataOriginal['A15']
+    del dataOriginal['A15']
+    dataOriginal = StandardScaler().fit_transform(dataOriginal)
+
+    dataRandom=sampling.randomSampling()
+    dataRandomY=dataRandom['A15']
+    del dataRandom['A15']
+    dataRandom = StandardScaler().fit_transform(dataRandom)
+
+    dataStrat=sampling.stratifiedSampling()
+    dataStratY=dataStrat['A15']
+    del dataStrat['A15']
+    dataStrat = StandardScaler().fit_transform(dataStrat)
+
+    pca = PCA(n_components = 2)
+
+    originalPCA = pca.fit_transform(dataOriginal)
+
+    randomPCA = pca.fit_transform(dataRandom)
+
+    stratPCA = pca.fit_transform(dataStrat)
+
+    print(originalPCA[:,:2])
+
+    data=[originalPCA,dataOriginalY,randomPCA,dataRandomY,stratPCA,dataStratY]
+    data=pd.DataFrame(data)
+    data=data.to_json()
+    return render_template('task.html',taskJS="task3b",data=data)
+
+@app.route('/task3c',methods=['GET'])
+def task3c():
+
+    dataOriginal=sampling.originalData()
+    dataOriginalY=dataOriginal['A15']
+    del dataOriginal['A15']
+    dataOriginal = StandardScaler().fit_transform(dataOriginal)
+
+    dataRandom=sampling.randomSampling()
+    dataRandomY=dataRandom['A15']
+    del dataRandom['A15']
+    dataRandom = StandardScaler().fit_transform(dataRandom)
+
+    dataStrat=sampling.stratifiedSampling()
+    dataStratY=dataStrat['A15']
+    del dataStrat['A15']
+    dataStrat = StandardScaler().fit_transform(dataStrat)
+
+    pca = PCA(n_components = 3)
+    def return_dict_arr(data,yVal):
+        array=[]
+        yVal=np.array(yVal)
+        for i in range(len(data)):
+            array.append({"key":"P"+str(i),"value":yVal[i],"x":data[i,0],"y":data[i,1],"z":data[i,2]})
+
+        return array
+
+    originalPCA = pca.fit_transform(dataOriginal)
+    originalPCA = {"key":"Bubbles","values":return_dict_arr(originalPCA,dataOriginalY)}
+
+    randomPCA = pca.fit_transform(dataRandom)
+    randomPCA = {"key":"Bubbles", "values":return_dict_arr(randomPCA,dataRandomY)}
+
+    stratPCA = pca.fit_transform(dataStrat)
+    stratPCA={"key":"Bubbles","values":return_dict_arr(stratPCA,dataStratY)}
+
+    # print(originalPCA[:,:2])
+
+    data=[json.dumps(originalPCA), json.dumps(randomPCA), json.dumps(stratPCA)]#,"randomPCA":dataOriginalY,dataRandomY,stratPCA,dataStratY}
+    data=pd.DataFrame(data)
+    data=data.to_json()
+    #data=json.dumps(data)
+    return render_template('task3c.html',taskJS="task3c",data=data)
 
 if __name__== "__main__":
     app.run(debug=True)
