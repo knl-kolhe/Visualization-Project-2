@@ -12,7 +12,10 @@ import numpy as np
 
 dataStrat=stratified_sampling.stratifiedSampling()
 dataRandom=stratified_sampling.randomSampling()
-sampledData=pd.io.json.read_json(dataStrat)
+dataStrat=pd.io.json.read_json(dataStrat)
+dataRandom=pd.io.json.read_json(dataRandom)
+
+
 clusters=[]
 avgDistance=[]
 for i in range(1,10):

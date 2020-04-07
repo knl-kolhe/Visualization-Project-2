@@ -20,7 +20,7 @@ function task1a(data) {
 
     var htmlString="Task 1(a)<br>Original No. of rows in data: 690 \
                                 <br>No. of rows in data after random sampling: \
-                                "+countRandom+"<br>No. of rows in data after random sampling: "+countStrat
+                                "+countRandom+"<br>No. of rows in data after stratified sampling: "+countStrat
     d3.select("#variable").html(htmlString);
 
 }
