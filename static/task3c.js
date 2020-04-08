@@ -58,7 +58,7 @@ function plot(dataPCA) {
         ]);
 
     var svg = d3.select("#svgElement").append("svg")
-        .attr("width", size * n + padding)
+        .attr("width", size * n + padding+10)
         .attr("height", size * n + padding+20)
         .append("g")
         .attr("transform", "translate(" + padding + "," + padding / 2 + ")");

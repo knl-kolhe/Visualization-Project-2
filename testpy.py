@@ -32,7 +32,9 @@ kmeansData=pd.DataFrame({"clusters":[clusters],"avgDistance":[avgDistance]})
 data=kmeansData.to_json()
 
 
-dataOriginal=pd.io.json.read_json(sampling.originalData())
+
+
+dataOriginal=sampling.originalData()
 dataOriginalY=dataOriginal['A15']
 del dataOriginal['A15']
 dataOriginal = StandardScaler().fit_transform(dataOriginal)
