@@ -90,15 +90,17 @@ function lineChart(pcaX, pcaY,x_axis) {
         .attr("cy", function(d,i) {
             return yScale(pcaX[i][1])
         })
-        .attr("r", 2)
+        .attr("r", 4)
         .style("fill",function(d,i){
             if(pcaY[i]==0){
-                return "green"
+                return "#bb3380"
             }
             else{
-                return "red"
+                return "#d9ae38"
             }
-        });
+
+        })
+        .attr("fill-opacity", 0.8);
 
 }
 

@@ -6304,7 +6304,7 @@
   	var width = 500;
   	var height = 500;
   	var dimensions = { x: 40, y: 40, z: 40 };
-  	var colors = ["red","green"];
+  	var colors = ["#bb3380","#d9ae38"];
   	var color = void 0;
   	var classed = "d3X3dScatterPlot";
   	var debug = false;

@@ -7,8 +7,13 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 import json
+from sklearn.metrics import pairwise_distances
+from sklearn import manifold
+
 
 app = Flask(__name__)
+
+
 
 @app.route('/')
 def index():
@@ -147,23 +152,79 @@ def task3B():
     del dataStrat['A15']
     dataStrat = StandardScaler().fit_transform(dataStrat)
 
-    pca = PCA(n_components = 2)
+    mds_data = manifold.MDS(n_components=2, dissimilarity='precomputed')
 
-    originalPCA = pca.fit_transform(dataOriginal)
+    similarity = pairwise_distances(dataOriginal, metric='euclidean')
+    originalMDSEu = mds_data.fit_transform(similarity)
 
-    randomPCA = pca.fit_transform(dataRandom)
+    similarity = pairwise_distances(dataRandom, metric='euclidean')
+    randomMDSEu = mds_data.fit_transform(similarity)
 
-    stratPCA = pca.fit_transform(dataStrat)
+    similarity = pairwise_distances(dataStrat, metric='euclidean')
+    stratMDSEu = mds_data.fit_transform(similarity)
 
-    print(originalPCA[:,:2])
+    similarity = pairwise_distances(dataOriginal, metric='correlation')
+    originalMDSCo = mds_data.fit_transform(similarity)
 
-    data=[originalPCA,dataOriginalY,randomPCA,dataRandomY,stratPCA,dataStratY]
+    similarity = pairwise_distances(dataRandom, metric='correlation')
+    randomMDSCo = mds_data.fit_transform(similarity)
+
+    similarity = pairwise_distances(dataStrat, metric='correlation')
+    stratMDSCo = mds_data.fit_transform(similarity)
+
+    data=[originalMDSEu,dataOriginalY,randomMDSEu,dataRandomY,stratMDSEu,dataStratY,\
+            originalMDSCo,dataOriginalY,randomMDSCo,dataRandomY,stratMDSCo,dataStratY]
+
     data=pd.DataFrame(data)
     data=data.to_json()
     return render_template('task.html',taskJS="task3b",data=data)
 
 @app.route('/task3c',methods=['GET'])
 def task3c():
+
+    dataOriginal=sampling.originalData()
+    dataOriginalY=dataOriginal['A15']
+    del dataOriginal['A15']
+    dataOriginal = StandardScaler().fit_transform(dataOriginal)
+
+    dataRandom=sampling.randomSampling()
+    dataRandomY=dataRandom['A15']
+    del dataRandom['A15']
+    dataRandom = StandardScaler().fit_transform(dataRandom)
+
+    dataStrat=sampling.stratifiedSampling()
+    dataStratY=dataStrat['A15']
+    del dataStrat['A15']
+    dataStrat = StandardScaler().fit_transform(dataStrat)
+
+    pca = PCA(n_components = 3)
+    def return_dict_arr(data,yVal):
+        array=[]
+        yVal=np.array(yVal)
+        for i in range(len(data)):
+            array.append({"target":yVal[i],"PCA1":data[i,0],"PCA2":data[i,1],"PCA3":data[i,2]})
+
+        return array
+
+    originalPCA = pca.fit_transform(dataOriginal)
+    originalPCA = {"values":return_dict_arr(originalPCA,dataOriginalY)}
+
+    randomPCA = pca.fit_transform(dataRandom)
+    randomPCA = {"values":return_dict_arr(randomPCA,dataRandomY)}
+
+    stratPCA = pca.fit_transform(dataStrat)
+    stratPCA={"values":return_dict_arr(stratPCA,dataStratY)}
+
+    # print(originalPCA[:,:2])
+
+    data=[json.dumps(originalPCA), json.dumps(randomPCA), json.dumps(stratPCA)]#,"randomPCA":dataOriginalY,dataRandomY,stratPCA,dataStratY}
+    data=pd.DataFrame(data)
+    data=data.to_json()
+    #data=json.dumps(data)
+    return render_template('task3c.html',taskJS="task3c",data=data)
+
+@app.route('/extra',methods=['GET'])
+def extra():
 
     dataOriginal=sampling.originalData()
     dataOriginalY=dataOriginal['A15']
@@ -204,7 +265,7 @@ def task3c():
     data=pd.DataFrame(data)
     data=data.to_json()
     #data=json.dumps(data)
-    return render_template('task3c.html',taskJS="task3c",data=data)
+    return render_template('extra.html',taskJS="extra",data=data)
 
 if __name__== "__main__":
     app.run(debug=True)

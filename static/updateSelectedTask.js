@@ -1,6 +1,6 @@
 function updateSelectedTask(currentTask)
 {
-    var taskList=["task1a","task1b","task2a","task2b","task2c","task2d","task3a","task3b","task3c"]
+    var taskList=["task1a","task1b","task2a","task3a","task3b","task3c","extra"]
     for(index=0;index<taskList.length;index++)
     {
         //console.log(taskList[index])
